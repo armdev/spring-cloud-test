@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: students
+ 
+eureka:
+  instance:   
+    leaseRenewalIntervalInSeconds: 10
+  client:
+    enabled: true
+    registryFetchIntervalSeconds: 5
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: ${EUREKA:http://localhost:8761/eureka}  
