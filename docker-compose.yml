@@ -1,0 +1,37 @@
+version: '3.2'
+services:        
+ 
+  eureka:
+    image: eureka
+    build: ./eureka
+    container_name: eureka
+    ports:
+      - '8761:8761'
+    volumes:
+      - /opt/eureka/logs/:/opt/eureka/logs
+    networks:
+      - mp 
+  wiki:
+    image: wiki
+    build: ./wiki
+    container_name: wiki
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    links: 
+      - eureka   
+    depends_on:      
+      - eureka       
+    ports:
+      - '2018:2018'
+    volumes:
+      - /opt/wiki/logs/:/opt/wiki/logs
+    networks:
+      - mp
+
+networks:
+  mp:
+    driver: bridge
