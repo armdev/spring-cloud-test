@@ -7,14 +7,16 @@ services:
     container_name: eureka
     ports:
       - '8761:8761'
-    volumes:
-      - /opt/eureka/logs/:/opt/eureka/logs
+   # volumes:
+      #- /opt/eureka/logs/:/opt/eureka/logs
     networks:
       - mp 
   wiki:
     image: wiki
     build: ./wiki
     container_name: wiki
+    environment: 
+      - SERVER_IP=${SERVER_IP}
     deploy:
       restart_policy:
         condition: on-failure
@@ -27,8 +29,31 @@ services:
       - eureka       
     ports:
       - '2018:2018'
-    volumes:
-      - /opt/wiki/logs/:/opt/wiki/logs
+  #  volumes:
+     # - /opt/wiki/logs/:/opt/wiki/logs
+    networks:
+      - mp
+      
+  collector:
+    image: collector
+    build: ./collector
+    container_name: collector
+    environment: 
+      - SERVER_IP=${SERVER_IP}
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    links: 
+      - eureka   
+    depends_on:      
+      - eureka       
+    ports:
+      - '2020:2020'
+  #  volumes:
+     # - /opt/wiki/logs/:/opt/wiki/logs
     networks:
       - mp
 

@@ -1,2 +1,20 @@
 server:
   port: 2018
+
+spring:
+  application:
+    name: wiki
+ 
+message: Secret Message
+
+eureka:
+  instance:   
+    hostname: ${SERVER_IP:127.0.0.1}  
+    leaseRenewalIntervalInSeconds: 10
+  client:
+    enabled: true
+    registryFetchIntervalSeconds: 5
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: ${EUREKA:http://eureka:8761/eureka}  

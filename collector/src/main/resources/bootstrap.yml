@@ -1,0 +1,59 @@
+management:
+  security:  
+   enabled: false
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+  endpoints:
+    jmx:
+      exposure:
+       include: '*'
+    web:
+     exposure:
+      include: '*'
+      base-path: /actuator
+    cors:
+      allowed-origins: 'true'
+      enabled-by-default: 'false'
+    
+server:
+    port: 2020
+    
+spring:
+   
+  application:
+    name: collector
+  profiles:
+    active:
+      default
+
+
+hystrix:
+  command:
+    RemoteMessageClientCommand:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+    RemoteMessageAnnotationClient:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000      
+
+ 
+eureka:
+  instance:   
+    prefer-ip-address: true 
+    ip-address: ${SERVER_IP:127.0.0.1}
+    health-check-url-path: /actuator/health
+    leaseRenewalIntervalInSeconds: 3
+    leaseExpirationDurationInSeconds: 3
+  client:
+    enabled: true
+    registryFetchIntervalSeconds: 5    
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://${SERVER_IP:127.0.0.1}:8761/eureka}
