@@ -11,6 +11,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,24 +35,33 @@ public class TestController {
     private EurekaClient eurekaClient;
 
     @Autowired
+    private DiscoveryClient discoveryClient;
+
+    @Autowired
     private RestTemplate restTemplate;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestController.class);
 
+    @GetMapping(path = "/discovery", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<?> testDiscovery() {
+        List<String> services = discoveryClient.getServices();
+
+        return ResponseEntity.status(HttpStatus.OK).body(services);
+    }
+
     @GetMapping(path = "/micro", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<?> testEureka()
-    {
-     final List<ServerInfo> resultFromEureka = printAvailableServices();
+    public ResponseEntity<?> testEureka() {
+        final List<ServerInfo> resultFromEureka = printAvailableServices();
 
-     return ResponseEntity.status(HttpStatus.OK).body(resultFromEureka);
+        return ResponseEntity.status(HttpStatus.OK).body(resultFromEureka);
     }
 
     public List<ServerInfo> printAvailableServices() {
         List<ServerInfo> serverList = new ArrayList<>();
         try {
-           
-           
+
             Applications applications = eurekaClient.getApplications();
 
             ServerInfo info = new ServerInfo();
